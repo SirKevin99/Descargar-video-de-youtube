@@ -61,3 +61,7 @@ Aplicación web local construida con **Python (Flask)** y **yt-dlp** para descar
 - **Error con FFmpeg al unir video o extraer MP3:** Verificá que `ffmpeg -version` responda en tu terminal antes de iniciar `app.py`.
 - **Videos privados o con restricción de edad (Instagram / Facebook):** Agregá `'cookiesfrombrowser': ('chrome',)` (o `'edge'` / `'firefox'`) dentro de `ydl_opts` en `app.py`.
 - **Error de extracción en TikTok o YouTube:** Actualizá el motor ejecutando `pip install -U yt-dlp`.
+
+## Colaboradores
+
+- **PedroSRM** — Revisión y pruebas multiplataforma.
