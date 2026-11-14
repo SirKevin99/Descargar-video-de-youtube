@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Downloader | YT · TikTok · IG · FB</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --border: #334155;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 560px;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h1 { font-size: 1.35rem; font-weight: 700; }
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #334155;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+        .input-group { display: flex; gap: 8px; margin-bottom: 16px; }
+        input[type="text"] {
+            flex: 1;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--accent); }
+        .btn-secondary {
+            background: #334155;
+            color: var(--text);
+            border: none;
+            padding: 0 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-secondary:hover { background: #475569; }
+        .formats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+        .format-option {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .format-option.active { border-color: var(--accent); background: rgba(59, 130, 246, 0.15); }
+        .format-option strong { display: block; font-size: 0.9rem; margin-bottom: 2px; }
+        .format-option span { font-size: 0.75rem; color: var(--muted); }
+        .btn-primary {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .preview {
+            display: none;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 16px;
+            gap: 12px;
+            align-items: center;
+        }
+        .preview img { width: 96px; height: 64px; object-fit: cover; border-radius: 6px; background: #1e293b; }
+        .preview-info { flex: 1; overflow: hidden; }
+        .preview-title { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .preview-meta { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+        .progress-box { display: none; margin-top: 18px; }
+        .progress-bar-bg { background: #0f172a; height: 10px; border-radius: 999px; overflow: hidden; margin-bottom: 8px; }
+        .progress-bar-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.25s; }
+        .status-text { font-size: 0.85rem; color: var(--muted); display: flex; justify-content: space-between; }
+        .history { margin-top: 22px; border-top: 1px solid var(--border); padding-top: 14px; }
+        .history h2 { font-size: 0.85rem; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .history-item { font-size: 0.85rem; padding: 8px 10px; background: #0f172a; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Descargador Multimedia</h1>
+            <span id="platformBadge" class="badge">YT · TikTok · IG · FB</span>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="Pegá el enlace del video o reel..." autocomplete="off">
+            <button class="btn-secondary" id="pasteBtn" title="Pegar del portapapeles">Pegar</button>
+        </div>
+
+        <div id="previewBox" class="preview">
+            <img id="thumbImg" src="" alt="Miniatura">
+            <div class="preview-info">
+                <div id="previewTitle" class="preview-title"></div>
+                <div id="previewMeta" class="preview-meta"></div>
+            </div>
+        </div>
+
+        <div class="formats" id="formatSelector">
+            <div class="format-option active" data-format="video">
+                <strong>Video MP4</strong>
+                <span>Máxima calidad</span>
+            </div>
+            <div class="format-option" data-format="720p">
+                <strong>Video 720p</strong>
+                <span>Más liviano</span>
+            </div>
+            <div class="format-option" data-format="audio">
+                <strong>Audio MP3</strong>
+                <span>320 kbps</span>
+            </div>
+        </div>
+
+        <button class="btn-primary" id="downloadBtn">Descargar ahora</button>
+
+        <div id="progressBox" class="progress-box">
+            <div class="progress-bar-bg">
+                <div id="progressFill" class="progress-bar-fill"></div>
+            </div>
+            <div class="status-text">
+                <span id="statusLabel">Iniciando...</span>
+                <span id="speedLabel"></span>
+            </div>
+        </div>
+
+        <div class="history" id="historySection" style="display:none;">
+            <h2>Descargados en esta sesión</h2>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <script>
+        const urlInput = document.getElementById('urlInput');
+        const platformBadge = document.getElementById('platformBadge');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const progressBox = document.getElementById('progressBox');
+        const progressFill = document.getElementById('progressFill');
+        const statusLabel = document.getElementById('statusLabel');
+        const speedLabel = document.getElementById('speedLabel');
+        const previewBox = document.getElementById('previewBox');
+        let selectedFormat = 'video';
+        let infoTimeout = null;
+
+        document.querySelectorAll('.format-option').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.format-option').forEach(opt => opt.classList.remove('active'));
+                el.classList.add('active');
+                selectedFormat = el.dataset.format;
+            });
+        });
+
+        function detectarPlataforma(url) {
+            if (/youtube\.com|youtu\.be/i.test(url)) return 'YouTube';
+            if (/tiktok\.com/i.test(url)) return 'TikTok';
+            if (/instagram\.com/i.test(url)) return 'Instagram';
+            if (/facebook\.com|fb\.watch/i.test(url)) return 'Facebook';
+            return 'YT · TikTok · IG · FB';
+        }
+
+        async function cargarPreview(url) {
+            if (!url.startsWith('http')) {
+                previewBox.style.display = 'none';
+                return;
+            }
+            try {
+                const res = await fetch('/api/info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    document.getElementById('thumbImg').src = data.thumbnail || '';
+                    document.getElementById('previewTitle').textContent = data.title;
+                    document.getElementById('previewMeta').textContent = `${data.platform}${data.duration ? ' • ' + data.duration : ''}`;
+                    previewBox.style.display = 'flex';
+                }
+            } catch (_) {}
+        }
+
+        urlInput.addEventListener('input', () => {
+            const url = urlInput.value.trim();
+            platformBadge.textContent = detectarPlataforma(url);
+            clearTimeout(infoTimeout);
+            infoTimeout = setTimeout(() => cargarPreview(url), 600);
+        });
+
+        document.getElementById('pasteBtn').addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                urlInput.value = text;
+                urlInput.dispatchEvent(new Event('input'));
+            } catch (_) {
+                urlInput.focus();
+            }
+        });
+
+        downloadBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) return alert('Pegá una URL primero.');
+
+            downloadBtn.disabled = true;
+            progressBox.style.display = 'block';
+            progressFill.style.width = '0%';
+            progressFill.style.background = 'var(--accent)';
+            statusLabel.textContent = 'Conectando...';
+            speedLabel.textContent = '';
+
+            try {
+                const res = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, formato: selectedFormat })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Error al iniciar');
+
+                const interval = setInterval(async () => {
+                    const stRes = await fetch(`/api/status/${data.task_id}`);
+                    const st = await stRes.json();
+
+                    if (st.status === 'downloading') {
+                        progressFill.style.width = `${st.percent}%`;
+                        statusLabel.textContent = `Descargando: ${st.percent}%`;
+                        speedLabel.textContent = st.speed ? `${st.speed} (ETA ${st.eta})` : '';
+                    } else if (st.status === 'processing') {
+                        progressFill.style.width = '100%';
+                        statusLabel.textContent = 'Procesando audio/video con FFmpeg...';
+                        speedLabel.textContent = '';
+                    } else if (st.status === 'completed') {
+                        clearInterval(interval);
+                        progressFill.style.background = 'var(--success)';
+                        statusLabel.textContent = '✅ Guardado en Downloads/descargas';
+                        speedLabel.textContent = '';
+                        downloadBtn.disabled = false;
+                        agregarHistorial(st.title, selectedFormat);
+                    } else if (st.status === 'error') {
+                        clearInterval(interval);
+                        progressFill.style.background = 'var(--error)';
+                        statusLabel.textContent = `❌ ${st.error}`;
+                        downloadBtn.disabled = false;
+                    }
+                }, 600);
+            } catch (err) {
+                progressFill.style.background = 'var(--error)';
+                statusLabel.textContent = `❌ ${err.message}`;
+                downloadBtn.disabled = false;
+            }
+        });
+
+        function agregarHistorial(titulo, formato) {
+            const section = document.getElementById('historySection');
+            const list = document.getElementById('historyList');
+            section.style.display = 'block';
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.innerHTML = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80%;">${titulo}</span><span style="color:var(--success);font-weight:600;">${formato.toUpperCase()}</span>`;
+            list.prepend(item);
+        }
+    </script>
+</body>
+</html>
