@@ -54,3 +54,9 @@ Aplicación web local construida con **Python (Flask)** y **yt-dlp** para descar
 
 - **`v2.0.0` (Actual):** Migración a interfaz web con Flask, barra de progreso en tiempo real, vista previa y soporte para TikTok, Instagram y Facebook.
 - **`v1.0.0`:** Script inicial por línea de comandos (CLI) exclusivo para YouTube.
+
+## Solución de problemas
+
+- **Error con FFmpeg al unir video o extraer MP3:** Verificá que `ffmpeg -version` responda en tu terminal antes de iniciar `app.py`.
+- **Videos privados o con restricción de edad (Instagram / Facebook):** Agregá `'cookiesfrombrowser': ('chrome',)` (o `'edge'` / `'firefox'`) dentro de `ydl_opts` en `app.py`.
+- **Error de extracción en TikTok o YouTube:** Actualizá el motor ejecutando `pip install -U yt-dlp`.
