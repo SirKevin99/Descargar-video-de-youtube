@@ -10,8 +10,6 @@ Thumbs.db
 descargas/
 *.mp4
 *.mp3
-
-# Compilación a .exe
 build/
 dist/
 *.spec

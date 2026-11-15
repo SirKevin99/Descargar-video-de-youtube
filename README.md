@@ -5,63 +5,40 @@ Aplicación web local construida con **Python (Flask)** y **yt-dlp** para descar
 ## Características
 
 - **Soporte multiplataforma:** Compatible con **YouTube**, **TikTok**, **Instagram** (Reels/Posts) y **Facebook**.
+- **Ejecución con doble clic:** Apertura automática en el navegador mediante `Iniciar_Descargador.bat` o el ejecutable `DescargadorMultimedia.exe`.
 - **Vista previa automática:** Muestra miniatura, título, plataforma y duración antes de descargar.
 - **Opciones de formato:**
   - **Video MP4 (Máxima calidad):** Prioriza flujos nativos MP4 para máxima compatibilidad en PC y móviles.
   - **Video 720p:** Versión optimizada y más liviana.
   - **Audio MP3:** Extracción directa a 320 kbps.
-- **Progreso en tiempo real:** Barra de descarga en segundo plano con velocidad y tiempo estimado (ETA) sin bloquear la interfaz.
+- **Progreso en tiempo real:** Barra de descarga en segundo plano con velocidad y tiempo estimado (ETA).
 
 ## Requisitos previos
 
-1. **Python 3.10 o superior**
-2. **FFmpeg** (necesario para unir pistas de video/audio en MP4 y convertir a MP3):
-   - **Windows:** `winget install Gyan.FFmpeg`
-   - **Ubuntu/Debian:** `sudo apt install ffmpeg`
-   - **Arch Linux:** `sudo pacman -S ffmpeg`
+- **FFmpeg** (necesario para unir pistas de video/audio en MP4 y convertir a MP3):
+  - **Windows:** `winget install Gyan.FFmpeg`
+  - **Ubuntu/Debian:** `sudo apt install ffmpeg`
+  - **Arch Linux:** `sudo pacman -S ffmpeg`
+- **Python 3.10+** (solo si ejecutás desde el código fuente o el `.bat`; no es necesario si usás el `.exe` de la sección *Releases*).
 
-## Instalación y uso
+## Uso rápido en Windows
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/SirKevin99/Descargar-video-de-youtube.git
-   cd Descargar-video-de-youtube
-   ```
+1. **Con ejecutable (sin instalar Python):**
+   Descargá `DescargadorMultimedia.exe` desde la sección **Releases** de este repositorio y hacé doble clic. Se abrirá automáticamente `[http://127.0.0.1:5000](http://127.0.0.1:5000)` en tu navegador.
+2. **Desde el código fuente (con doble clic):**
+   Cloná el repositorio y ejecutá **`Iniciar_Descargador.bat`**. El script crea el entorno virtual, instala dependencias y abre el navegador solo.
 
-2. **Crear y activar un entorno virtual (opcional):**
-   ```bash
-   python -m venv venv
-   # En Windows:
-   venv\Scripts\activate
-   # En Linux/macOS:
-   source venv/bin/activate
-   ```
+## Compilar tu propio `.exe`
 
-3. **Instalar dependencias:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt pyinstaller
+python -m PyInstaller --onefile --add-data "templates;templates" --name "DescargadorMultimedia" app.py
+```
 
-4. **Ejecutar la aplicación:**
-   ```bash
-   python app.py
-   ```
-
-5. **Abrir en el navegador:**
-   Ingresá a `[http://127.0.0.1:5000](http://127.0.0.1:5000)`, pegá el enlace del video y elegí el formato. Los archivos se guardan automáticamente en `~/Downloads/descargas`.
+El ejecutable generado queda en `dist/DescargadorMultimedia.exe`.
 
 ## Versiones
 
-- **`v2.0.0` (Actual):** Migración a interfaz web con Flask, barra de progreso en tiempo real, vista previa y soporte para TikTok, Instagram y Facebook.
+- **`v2.1.0` (Actual):** Apertura automática en navegador, lanzador `Iniciar_Descargador.bat` y soporte para empaquetado `.exe` con PyInstaller.
+- **`v2.0.0`:** Interfaz web con Flask, barra de progreso en tiempo real y soporte multiplataforma.
 - **`v1.0.0`:** Script inicial por línea de comandos (CLI) exclusivo para YouTube.
-
-## Solución de problemas
-##Espero os guste
-
-- **Error con FFmpeg al unir video o extraer MP3:** Verificá que `ffmpeg -version` responda en tu terminal antes de iniciar `app.py`.
-- **Videos privados o con restricción de edad (Instagram / Facebook):** Agregá `'cookiesfrombrowser': ('chrome',)` (o `'edge'` / `'firefox'`) dentro de `ydl_opts` en `app.py`.
-- **Error de extracción en TikTok o YouTube:** Actualizá el motor ejecutando `pip install -U yt-dlp`.
-
-## Colaboradores
-
-- **PedroSRM** — Revisión y pruebas multiplataforma.
