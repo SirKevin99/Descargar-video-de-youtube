@@ -42,3 +42,5 @@ El ejecutable generado queda en `dist/DescargadorMultimedia.exe`.
 - **`v2.1.0` (Actual):** Apertura automática en navegador, lanzador `Iniciar_Descargador.bat` y soporte para empaquetado `.exe` con PyInstaller.
 - **`v2.0.0`:** Interfaz web con Flask, barra de progreso en tiempo real y soporte multiplataforma.
 - **`v1.0.0`:** Script inicial por línea de comandos (CLI) exclusivo para YouTube.
+
+- **SirKevin99** — Desarrollo principal.
