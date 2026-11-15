@@ -1,10 +1,17 @@
 import os
+import sys
 import uuid
 import threading
+import webbrowser
 from flask import Flask, render_template, request, jsonify
 import yt_dlp
 
-app = Flask(__name__)
+if getattr(sys, 'frozen', False):
+    template_dir = os.path.join(sys._MEIPASS, 'templates')
+    app = Flask(__name__, template_folder=template_dir)
+else:
+    app = Flask(__name__)
+
 tasks = {}
 
 def obtener_ruta_descargas():
@@ -126,4 +133,5 @@ def estado_descarga(task_id):
 
 if __name__ == '__main__':
     print("🚀 Servidor iniciado en http://127.0.0.1:5000")
+    threading.Timer(1.2, lambda: webbrowser.open("http://127.0.0.1:5000")).start()
     app.run(debug=False, port=5000)
